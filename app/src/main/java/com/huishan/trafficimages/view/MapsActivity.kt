@@ -10,9 +10,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.huishan.trafficimages.R
+import com.huishan.trafficimages.model.Camera
 import com.huishan.trafficimages.viewmodel.TransportViewModel
+import kotlinx.android.synthetic.main.activity_maps.*
 import org.koin.android.viewmodel.ext.android.viewModel
-
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -25,21 +26,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        viewModel.cameras.observe(this, Observer { cameras ->
-            for (camera in cameras){
-                val marker = mMap.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(camera.location.latitude, camera.location.longitude))
-                        .title(camera.camera_id)
-                )
-                marker.tag = camera.image
-            }
-            mMap.setOnMarkerClickListener { marker ->
-                val modalBottomSheet = CameraImageFragment(marker.tag as String)
-                modalBottomSheet.show(supportFragmentManager, CameraImageFragment.TAG)
-                return@setOnMarkerClickListener false
-            }
-        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -48,5 +34,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sgp))
         mMap.setMinZoomPreference(10f)
         viewModel.getTrafficImages()
+
+        viewModel.cameras.observe(this, Observer { cameras ->
+            for (camera in cameras){
+                val marker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(camera.location.latitude, camera.location.longitude))
+//                        .title(camera.camera_id)
+                )
+                marker.tag = camera
+            }
+            mMap.setOnMarkerClickListener { marker ->
+                val modalBottomSheet = CameraImageFragment(marker.tag as Camera)
+                modalBottomSheet.show(supportFragmentManager, CameraImageFragment.TAG)
+                return@setOnMarkerClickListener false
+            }
+        })
+
+        refresh.setOnClickListener {
+            viewModel.getTrafficImages()
+        }
     }
 }

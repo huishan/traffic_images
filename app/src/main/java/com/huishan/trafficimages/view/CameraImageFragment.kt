@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.huishan.trafficimages.R
+import com.huishan.trafficimages.model.Camera
 import kotlinx.android.synthetic.main.fragment_image.*
 
 
-class CameraImageFragment(url: String) : BottomSheetDialogFragment() {
-    private val imageUrl = url
+class CameraImageFragment(camera: Camera) : BottomSheetDialogFragment() {
+    private val imageUrl = camera.image
+    private val time = camera.timestamp
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -20,6 +22,7 @@ class CameraImageFragment(url: String) : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        time_stamp.text = time
         Glide.with(this).load(imageUrl).into(camera_image);
     }
     companion object {
