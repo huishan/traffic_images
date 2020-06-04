@@ -1,7 +1,6 @@
 package com.huishan.trafficimages.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,8 +35,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 marker.tag = camera.image
             }
             mMap.setOnMarkerClickListener { marker ->
-                //marker.tag as String
-                marker.tag
+                val modalBottomSheet = CameraImageFragment(marker.tag as String)
+                modalBottomSheet.show(supportFragmentManager, CameraImageFragment.TAG)
                 return@setOnMarkerClickListener false
             }
         })
@@ -45,7 +44,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         val sgp = LatLng(1.3619722, 103.8431686)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sgp))
         mMap.setMinZoomPreference(10f)
